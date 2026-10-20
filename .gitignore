@@ -1,0 +1,30 @@
+# MATLAB generated files
+*.asv
+*.m~
+*.autosave
+slprj/
+codegen/
+cache/
+build/
+dist/
+*.mlappinstall
+
+# Local login data (never commit real accounts or passwords)
+app/lname.xls
+app/lcode.xls
+credentials/
+
+# Editor and operating-system files
+.idea/
+.vscode/
+__pycache__/
+*.py[cod]
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Temporary files
+*.tmp
+*.temp
+~$*
+

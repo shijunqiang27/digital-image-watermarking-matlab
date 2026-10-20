@@ -1,0 +1,16 @@
+* text=auto
+
+*.m text eol=lf
+*.md text eol=lf
+*.py text eol=lf
+
+*.mlapp binary
+*.mlx binary
+*.mat binary
+*.xls binary
+*.xlsx binary
+*.jpg binary
+*.jpeg binary
+*.png binary
+*.bmp binary
+
