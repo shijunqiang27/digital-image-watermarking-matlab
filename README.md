@@ -1,81 +1,71 @@
-# 基于 MATLAB 的数字图像水印系统
+# MATLAB 数字图像水印系统
 
-本仓库整理自毕业设计项目，包含 MATLAB App Designer 图形界面程序，以及 DCT、DWT、SVD、Arnold 置乱和 Logistic 混沌等数字图像水印算法的实验文件。
+[English](README.en.md)
 
-## 主要功能
+这是一个基于 MATLAB App Designer 的图像数字水印毕业设计项目。主程序实现了基于 **Haar 小波变换（DWT）、离散余弦变换（DCT）和奇异值分解（SVD）** 的灰度图像水印嵌入与提取，并提供噪声、滤波、裁剪、旋转和 JPEG 压缩等实验操作。
 
-- 数字图像水印嵌入与提取
-- DCT、DWT、SVD 等变换域算法实验
-- Arnold 置乱和 Logistic 混沌加密实验
-- 水印图像的旋转、压缩、噪声等攻击测试
-- PSNR、SSIM、NC 等质量和鲁棒性指标分析
-- MATLAB App Designer 图形界面、登录和账号管理页面
+## 功能一览
 
-## 项目结构
+- 在载体图像中嵌入并提取二值水印
+- 通过 Arnold 变换对水印进行置乱预处理
+- 显示原图、含水印图和提取出的水印
+- 计算 PSNR、SSIM 和归一化相关系数（NC）
+- 对含水印图像进行多种常见攻击并观察提取结果
+- 附带 DCT、DWT、SVD、Arnold 和 Logistic 混沌等 MATLAB 实验文件
+
+## 界面与运行效果
+
+主界面展示载体图像、水印图像、含水印图像和提取结果。
+
+![水印嵌入与提取主界面](docs/images/watermark-workflow.png)
+
+性能测试界面示例展示了 Hallway 载体图像上的一次实验结果：PSNR 为 42.4343 dB，SSIM 为 0.97811，NC 为 0.99913。该截图是单次示例，不代表所有输入图像或攻击条件下的固定结果。
+
+![一次水印性能测试示例](docs/images/embedding-extraction-result.png)
+
+系统也提供多种攻击操作，用于观察图像受干扰后的水印提取情况。
+
+![图像攻击测试示例](docs/images/attack-examples.png)
+
+## 主算法
+
+主程序的水印嵌入流程如下：
+
+1. 将 **64 × 64** 二值水印通过 Arnold 变换置乱（当前参数为 10 次迭代）。
+2. 对 **512 × 512** 灰度载体图像进行两级 Haar DWT，得到第二级高频子带 **HH2**。
+3. 在 **HH2** 中搜索信息熵最大的 **64 × 64** 区域，对其进行 DCT 和 SVD。
+4. 将置乱水印的奇异值按嵌入强度 **α = 0.05** 加入载体区域的奇异值，再通过逆变换得到含水印图像。
+5. 提取时，根据保存的嵌入参数恢复水印；旋转攻击测试还包含 SURF 特征匹配与旋转校正。
+
+## 快速开始
+
+### 环境
+
+- MATLAB 桌面版（包含 App Designer）
+- Image Processing Toolbox
+- Wavelet Toolbox
+- Computer Vision Toolbox（使用 SURF 特征进行旋转校正时需要）
+
+项目未注明特定 MATLAB 发行版本。所需工具箱取决于所运行的功能。
+
+### 启动主程序
+
+1. 在 MATLAB 中将当前文件夹切换到仓库的 **app/** 目录。
+2. 双击打开 **DIP_sjq.mlapp**。
+3. 点击“打开载体图片”，选择 **hallway.jpg**；点击“打开水印图片”，选择 **水印(二值).bmp**。
+4. 点击“嵌入水印”生成含水印图像，再点击“提取水印”查看提取结果。
+5. 点击“水印性能测试”进入测试界面，可计算指标并应用不同攻击。
+
+示例输入已随项目提供：**hallway.jpg** 为 **512 × 512** 灰度图，**水印(二值).bmp** 为 **64 × 64** 二值图。主程序按这两个尺寸设计；替换输入时请保持尺寸和图像类型匹配。
+
+## 项目目录
 
 ~~~text
-digital-image-watermarking-matlab/
-├─ app/                    # MATLAB App Designer 程序与运行资源
-├─ experiments/dct/        # 算法实验、测试图片与实验结果
-├─ source/appdesigner/     # 从 .mlapp 导出的可审查 MATLAB 源码
-├─ tools/                  # 工程辅助脚本
-├─ .gitignore
-├─ .gitattributes
-└─ README.md
+app/                    App Designer 主程序、测试界面和示例图片
+experiments/dct/        MATLAB Live Script、算法实验及结果图片
+source/appdesigner/     从 .mlapp 导出的可读 MATLAB 源码
+tools/                  App 源码导出辅助脚本
+docs/images/            本 README 使用的界面与实验截图
 ~~~
 
-## 环境要求
-
-- MATLAB（需支持 App Designer）
-- Image Processing Toolbox
-- Wavelet Toolbox（运行 DWT 相关实验时需要）
-
-原工程是在 Windows 环境下开发。由于原始工程没有记录准确的 MATLAB 版本，建议使用较新的 MATLAB 版本打开；若出现版本兼容提示，请先使用 App Designer 完成升级并另存。
-
-## 运行方式
-
-1. 在 MATLAB 中将仓库根目录设为当前文件夹。
-2. 将 app/ 加入 MATLAB 路径，或直接进入该目录。
-3. 双击 app/DIP_sjq.mlapp 可直接打开主要水印处理界面。
-4. 若需要完整登录流程，打开 app/app1.mlapp，并按照下方说明准备本地登录数据文件。
-
-## 登录数据说明
-
-原项目通过 lname.xls 和 lcode.xls 保存用户名与密码。真实账号数据不适合上传到公开 GitHub 仓库，因此这两个文件已从仓库中排除，并写入 .gitignore。
-
-需要测试登录功能时，可在本机 app/ 目录自行放置这两个文件：
-
-- lname.xls：B 列保存用户名。
-- lcode.xls：A 列保存序号，B 列保存与用户名对应的密码。
-
-请勿提交包含真实账号或密码的文件。当前存储方式仅用于毕业设计演示，不适合生产环境；正式应用应改用密码哈希和安全数据库。
-
-## App 源码导出
-
-.mlapp 是压缩的二进制工程文件，不便于 Git 直接比较。仓库同时保留由 tools/export_mlapp_source.py 导出的只读 .m 文件，方便代码审查和版本对比。
-
-更新 App 后可重新执行：
-
-~~~powershell
-python tools/export_mlapp_source.py app source/appdesigner
-~~~
-
-导出的 .m 文件仅用于阅读和比较，实际编辑请使用 MATLAB App Designer 打开 .mlapp 文件。
-
-## 上传到 GitHub
-
-本目录已经初始化为 Git 仓库，默认分支为 main。在 GitHub 创建空仓库后执行：
-
-~~~powershell
-git remote add origin https://github.com/<你的用户名>/<仓库名>.git
-git push -u origin main
-~~~
-
-上传前请再次运行 git status，确认没有账号文件、个人文档或其他敏感资料进入暂存区。
-
-## 说明
-
-- 仓库不包含毕业论文、答辩 PPT、周报和参考文献等非代码资料。
-- 部分实验文件和界面资源使用中文文件名，建议保持 UTF-8 环境并避免随意改名。
-- 本项目目前未指定开源许可证；公开发布前请根据实际授权情况选择合适的许可证。
-
+实验脚本可在 MATLAB 中从 **experiments/dct/** 目录打开。App Designer 的 **.mlapp** 文件是可编辑的应用文件；**source/appdesigner/** 中的 **.m** 文件用于查看和比较源码。
